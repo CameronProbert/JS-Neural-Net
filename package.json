@@ -1,0 +1,14 @@
+{
+  "name": "JS-Neural-Net",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/CameronProbert/JS-Neural-Net.git",
+  "author": "catherinefromont <catherinegfromont@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index"
+  },
+  "dependencies": {
+    "sigmoid": "^0.0.1"
+  }
+}
