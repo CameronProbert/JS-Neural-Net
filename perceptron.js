@@ -5,6 +5,7 @@
 function Perceptron (numInputs) {
   this.weights = randomiseWeights(numInputs)
   this.bias = randomiseBias()
+  console.log(this.toString())
 }
 
 /**
@@ -12,6 +13,13 @@ function Perceptron (numInputs) {
  * @param {Number} input the input to test
  */
 Perceptron.prototype.heaviside = input => input < 0 ? 0 : 1
+
+Perceptron.prototype.toString = () => {
+  let stringBuilder = 'Perceptron:\n'
+  stringBuilder += 'Weights: ' + this.weights + '\n'
+  stringBuilder += 'Bias: ' + this.bias
+  return stringBuilder
+}
 
 /**
  * Processes inputs and returns a binary value as output
@@ -32,9 +40,9 @@ Perceptron.prototype.process = inputs => {
  * @param {*} change
  * @param {Number} learningRate
  */
-Perceptron.prototype.adjust = (inputs, change, learningRate) => {
+Perceptron.prototype.adjust = (inputs, difference, learningRate) => {
   for (let i = 0; i < inputs.length; i++) {
-    this.weights[i] += inputs[i] * change * learningRate
+    this.weights[i] += inputs[i] * difference * learningRate
   }
 }
 
