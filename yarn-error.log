@@ -1,14 +1,14 @@
 Arguments: 
-  /home/eda/.nvm/versions/node/v8.9.4/bin/node /usr/share/yarn/bin/yarn.js start
+  /usr/bin/node /usr/share/yarn/bin/yarn.js start
 
 PATH: 
-  /home/eda/.nvm/versions/node/v8.9.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.5.1
 
 Node version: 
-  8.9.4
+  6.11.4
 
 Platform: 
   linux x64
@@ -25,6 +25,7 @@ npm manifest:
       "start": "node index"
     },
     "dependencies": {
+      "lodash": "^4.17.5",
       "sigmoid": "^0.0.1"
     }
   }
@@ -37,6 +38,10 @@ Lockfile:
   # yarn lockfile v1
   
   
+  lodash@^4.17.5:
+    version "4.17.5"
+    resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+  
   sigmoid@^0.0.1:
     version "0.0.1"
     resolved "https://registry.yarnpkg.com/sigmoid/-/sigmoid-0.0.1.tgz#b15d37258742293f697008162ab8b9ac4749b4a4"
@@ -46,13 +51,14 @@ Trace:
   Exit code: 1
   Command: sh
   Arguments: -c node index
-  Directory: /home/eda/workspace/JS-Neural-Net
+  Directory: /home/cameron/workspace/JS-Neural-Net
   Output:
   
+      at ProcessTermError.Error (native)
       at ProcessTermError.MessageError (/usr/share/yarn/lib/cli.js:186:110)
       at new ProcessTermError (/usr/share/yarn/lib/cli.js:226:113)
       at ChildProcess.<anonymous> (/usr/share/yarn/lib/cli.js:30281:17)
-      at emitTwo (events.js:126:13)
-      at ChildProcess.emit (events.js:214:7)
-      at maybeClose (internal/child_process.js:925:16)
-      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
+      at emitTwo (events.js:106:13)
+      at ChildProcess.emit (events.js:191:7)
+      at maybeClose (internal/child_process.js:920:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:230:5)

@@ -3,8 +3,8 @@
  * @param {Integer} numInputs the number of inputs for the perceptron to have
  */
 function Perceptron (numInputs) {
-  this.weights = randomiseWeights(numInputs)
-  this.bias = randomiseBias()
+  this.weights = [0]//randomiseWeights(numInputs)
+  this.bias = 0.2//randomiseBias()
   console.log(this.toString())
 }
 

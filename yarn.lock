@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+lodash@^4.17.5:
+  version "4.17.5"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+
 sigmoid@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/sigmoid/-/sigmoid-0.0.1.tgz#b15d37258742293f697008162ab8b9ac4749b4a4"
