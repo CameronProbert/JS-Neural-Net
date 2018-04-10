@@ -1,14 +1,14 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js start
+  /home/eda/.nvm/versions/node/v8.9.4/bin/node /usr/share/yarn/bin/yarn.js start
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /home/eda/.nvm/versions/node/v8.9.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.5.1
 
 Node version: 
-  6.11.4
+  8.9.4
 
 Platform: 
   linux x64
@@ -51,14 +51,13 @@ Trace:
   Exit code: 1
   Command: sh
   Arguments: -c node index
-  Directory: /home/cameron/workspace/JS-Neural-Net
+  Directory: /home/eda/workspace/JS-Neural-Net
   Output:
   
-      at ProcessTermError.Error (native)
       at ProcessTermError.MessageError (/usr/share/yarn/lib/cli.js:186:110)
       at new ProcessTermError (/usr/share/yarn/lib/cli.js:226:113)
       at ChildProcess.<anonymous> (/usr/share/yarn/lib/cli.js:30281:17)
-      at emitTwo (events.js:106:13)
-      at ChildProcess.emit (events.js:191:7)
-      at maybeClose (internal/child_process.js:920:16)
-      at Process.ChildProcess._handle.onexit (internal/child_process.js:230:5)
+      at emitTwo (events.js:126:13)
+      at ChildProcess.emit (events.js:214:7)
+      at maybeClose (internal/child_process.js:925:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
