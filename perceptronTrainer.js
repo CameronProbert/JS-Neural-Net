@@ -1,6 +1,7 @@
 const Perceptron = require('./perceptron')
 
-const maxIterations = 1000
+const maxIterations = 10000
+const printInterval = 500
 const learningRate = 0.5
 const a = 0.5
 const b = -10
@@ -19,6 +20,7 @@ function isAboveLine (x, y) {
 
 function train (perceptron) {
   let numCorrect = 0
+  let lastCorrect = 0
   for (let i = 0; i < maxIterations; i++) {
     const point = [
       Math.random() * 201 - 101,
@@ -28,7 +30,10 @@ function train (perceptron) {
     const actual = perceptron.process(point)
     const expected = isAboveLine(point[0], point[1])
     if (actual === expected) numCorrect++
-    if (i % 50 === 0) console.log(`Correct: ${numCorrect}/${i}`)
+    if (i % printInterval === 0) {
+      console.log(`Correct: ${numCorrect}/${i}\t\t Difference: ${numCorrect - lastCorrect}`)
+      lastCorrect = numCorrect
+    }
     const difference = expected - actual
 
     perceptron.adjust(point, difference, learningRate)
