@@ -1,10 +1,11 @@
+const _ = require('lodash')
+
 const Perceptron = require('./perceptron')
 
-const maxIterations = 10000
-const printInterval = 500
-const learningRate = 0.5
-const a = 0.5
-const b = -10
+const maxIterations = 1000000
+const printInterval = 5000
+const a = _.random(-2, 2, true)
+const b = _.random(-50, 50)
 
 /**
  * Returns the y value of the function ax + b
@@ -23,25 +24,27 @@ function train (perceptron) {
   let lastCorrect = 0
   for (let i = 0; i < maxIterations; i++) {
     const point = [
-      Math.random() * 201 - 101,
-      Math.random() * 201 - 101
+      _.random(-100, 100),
+      _.random(-100, 100)
     ]
 
     const actual = perceptron.process(point)
     const expected = isAboveLine(point[0], point[1])
     if (actual === expected) numCorrect++
-    if (i % printInterval === 0) {
-      console.log(`Correct: ${numCorrect}/${i}\t\t Difference: ${numCorrect - lastCorrect}`)
+    if ((i + 1) % printInterval === 0) {
+      console.log(`Correct: ${numCorrect}/${i + 1}\t\t Difference: ${numCorrect - lastCorrect}`)
+      console.log(perceptron.weightsToString())
       lastCorrect = numCorrect
     }
     const difference = expected - actual
-
+    const learningRate = 1 - (i / maxIterations)
     perceptron.adjust(point, difference, learningRate)
   }
 }
 
 function trainPerceptron () {
-  const perceptron = new Perceptron(1)
+  console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
+  const perceptron = new Perceptron(2)
   train(perceptron)
 }
 
