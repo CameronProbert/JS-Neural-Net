@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Axes from './Axes'
+
 const trainPerceptron = require('../neural-nets/perceptronTrainer')
 
 const svgSize = 600
@@ -44,13 +46,13 @@ class Display extends React.Component {
       <div className='display-wrapper'>
         <div className='display'>
           <svg onClick={this.handleClick} width={svgSize} height={svgSize}>
-            <line className='axis' x1={cx} y1="0" x2={cx} y2={svgSize} />
-            <line className='axis' x1="0" y1={cy} x2={svgSize} y2={cy} />
+            <Axes svgSize={svgSize} />
             <line
               className='gradientLine'
               x1="0" y1={cy - bound(testA, -100, testB)}
               x2={svgSize} y2={cy - bound(testA, 100, testB)}
             />
+
           </svg>
         </div>
       </div>
