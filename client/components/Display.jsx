@@ -5,6 +5,7 @@ import Axes from './Axes'
 const trainPerceptron = require('../neural-nets/perceptronTrainer')
 
 const svgSize = 600
+const scale = svgSize / 200
 const cx = svgSize / 2
 const cy = svgSize / 2
 
@@ -23,9 +24,10 @@ class Display extends React.Component {
     // Binds
     this.handleClick = this.handleClick.bind(this)
 
+    // a and b refer to the line of the graph, ax + b
     this.state = {
-      a: testA,
-      b: testB,
+      a: a || testA,
+      b: b || testB,
       perceptron,
       dataPoints: []
     }
@@ -42,6 +44,9 @@ class Display extends React.Component {
   }
 
   render () {
+    const yIntLeft = cy - yIntercept(this.state.a, -100, this.state.b) * scale
+    const yIntRight = cy - yIntercept(this.state.a, 100, this.state.b) * scale
+
     return (
       <div className='display-wrapper'>
         <div className='display'>
@@ -49,8 +54,8 @@ class Display extends React.Component {
             <Axes svgSize={svgSize} />
             <line
               className='gradientLine'
-              x1="0" y1={cy - bound(testA, -100, testB)}
-              x2={svgSize} y2={cy - bound(testA, 100, testB)}
+              x1="0" y1={yIntLeft}
+              x2={svgSize} y2={yIntRight}
             />
 
           </svg>
@@ -60,6 +65,6 @@ class Display extends React.Component {
   }
 }
 
-const bound = (a, x, b) => Math.round((a * x + b) * (svgSize / 200))
+const yIntercept = (a, x, b) => Math.round((a * x + b))
 
 export default Display

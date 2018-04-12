@@ -36618,6 +36618,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var trainPerceptron = __webpack_require__(28);
 
 var svgSize = 600;
+var scale = svgSize / 200;
 var cx = svgSize / 2;
 var cy = svgSize / 2;
 
@@ -36640,9 +36641,10 @@ var Display = function (_React$Component) {
     // Binds
     _this.handleClick = _this.handleClick.bind(_this);
 
+    // a and b refer to the line of the graph, ax + b
     _this.state = {
-      a: testA,
-      b: testB,
+      a: a || testA,
+      b: b || testB,
       perceptron: perceptron,
       dataPoints: []
     };
@@ -36664,6 +36666,9 @@ var Display = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var yIntLeft = cy - yIntercept(this.state.a, -100, this.state.b) * scale;
+      var yIntRight = cy - yIntercept(this.state.a, 100, this.state.b) * scale;
+
       return _react2.default.createElement(
         'div',
         { className: 'display-wrapper' },
@@ -36676,8 +36681,8 @@ var Display = function (_React$Component) {
             _react2.default.createElement(_Axes2.default, { svgSize: svgSize }),
             _react2.default.createElement('line', {
               className: 'gradientLine',
-              x1: '0', y1: cy - bound(testA, -100, testB),
-              x2: svgSize, y2: cy - bound(testA, 100, testB)
+              x1: '0', y1: yIntLeft,
+              x2: svgSize, y2: yIntRight
             })
           )
         )
@@ -36688,8 +36693,8 @@ var Display = function (_React$Component) {
   return Display;
 }(_react2.default.Component);
 
-var bound = function bound(a, x, b) {
-  return Math.round((a * x + b) * (svgSize / 200));
+var yIntercept = function yIntercept(a, x, b) {
+  return Math.round(a * x + b);
 };
 
 exports.default = Display;
