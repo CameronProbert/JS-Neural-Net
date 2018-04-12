@@ -3,13 +3,36 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/CameronProbert/JS-Neural-Net.git",
-  "author": "catherinefromont <catherinegfromont@gmail.com>",
+  "author": "Cameron Probert <c.probert@hotmail.co.nz>",
   "license": "MIT",
   "scripts": {
-    "start": "node index"
+    "start": "webpack && node server",
+    "dev": "node server & webpack --watch",
+    "test": "jest --watchAll"
+  },
+  "babel": {
+    "presets": [
+      "env",
+      "react"
+    ]
   },
   "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "jest": "^22.4.3",
     "lodash": "^4.17.5",
-    "sigmoid": "^0.0.1"
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "sigmoid": "^0.0.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
   }
 }
