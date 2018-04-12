@@ -36711,7 +36711,6 @@ var _ = __webpack_require__(12);
 var Perceptron = __webpack_require__(31);
 
 var maxIterations = 1000000;
-// const printInterval = 5000
 var a = _.random(-2, 2, true);
 var b = _.random(-50, 50);
 
@@ -36729,23 +36728,15 @@ function isAboveLine(x, y) {
 
 /**
  * Trains a perceptron
- * @param {*} perceptron 
+ * @param {*} perceptron  The Perceptron to train
  * @param {*} percentCompleteFn Returns the percentage complete as a parameter to this function
  */
 function train(perceptron, percentCompleteFn) {
-  /* let numCorrect = 0
-  let lastCorrect = 0 */
   for (var i = 0; i < maxIterations; i++) {
     var point = [_.random(-100, 100), _.random(-100, 100)];
 
     var actual = perceptron.process(point);
     var expected = isAboveLine(point[0], point[1]);
-    /* if (actual === expected) numCorrect++
-    if ((i + 1) % printInterval === 0) {
-      console.log(`Correct: ${numCorrect}/${i + 1}\t\t Difference: ${numCorrect - lastCorrect}`)
-      console.log(perceptron.weightsToString())
-      lastCorrect = numCorrect
-    } */
     var difference = expected - actual;
     var learningRate = 1 - i / maxIterations;
     perceptron.adjust(point, difference, learningRate);
@@ -36759,7 +36750,6 @@ function train(perceptron, percentCompleteFn) {
 function trainPerceptron(chosenA, chosenB, percentCompleteFn) {
   a = chosenA || _.random(-2, 2, true);
   b = chosenB || _.random(-50, 50);
-  // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
   var perceptron = new Perceptron(2);
   train(perceptron, percentCompleteFn);
   return {
