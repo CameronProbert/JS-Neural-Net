@@ -1,11 +1,12 @@
 const _ = require('lodash')
 
 const Perceptron = require('./perceptron')
+const SigmoidNeuron = require('./sigmoidNeuron')
 
-const maxIterations = 1000000
-const printInterval = 5000
-const a = _.random(-2, 2, true)
-const b = _.random(-50, 50)
+const maxIterations = 100000000
+const printInterval = 5000000
+let a = _.random(-2, 2, true)
+let b = _.random(-50, 50)
 
 /**
  * Returns the y value of the function ax + b
@@ -32,22 +33,35 @@ function train (perceptron) {
     const expected = isAboveLine(point[0], point[1])
     if (actual === expected) numCorrect++
     if ((i + 1) % printInterval === 0) {
-      console.log(`Correct: ${numCorrect}/${i + 1}\t\t Difference: ${numCorrect - lastCorrect}`)
+      console.log(`Correct: ${numCorrect}/${i + 1}\t\t Last ${printInterval} correct: ${((numCorrect - lastCorrect) / printInterval * 100).toFixed(3)}%`)
       console.log(perceptron.weightsToString())
       lastCorrect = numCorrect
     }
+
     const difference = expected - actual
-    const learningRate = 1 - (i / maxIterations)
+    const learningRate = 0.5 - (0.5 * (i / maxIterations))
     perceptron.adjust(point, difference, learningRate)
   }
+  return numCorrect
 }
 
-function trainPerceptron () {
-  console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
-  const perceptron = new Perceptron(2)
-  train(perceptron)
+function trainNeuron (neuronsToTrain, isSigmoid) {
+  const numCorrect = []
+  let neuronType = null
+  for (let i = 0; i < neuronsToTrain; i++) {
+    a = _.random(-2, 2, true)
+    b = _.random(-50, 50)
+    // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
+    let neuron = {}
+    if (isSigmoid) neuron = new SigmoidNeuron(2)
+    else neuron = new Perceptron(2)
+    neuronType = typeof neuron
+    numCorrect.push(train(neuron))
+  }
+  console.log(`Average of ${neuronsToTrain} repetitions for a ${neuronType}:
+    ${numCorrect.reduce((sum, item) => sum + item, 0) / neuronsToTrain}`)
 }
 
 module.exports = {
-  trainPerceptron
+  trainNeuron
 }

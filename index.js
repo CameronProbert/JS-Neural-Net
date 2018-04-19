@@ -5,18 +5,25 @@ const net = require('./net')
 const perceptronTrainer = require('./perceptronTrainer')
 
 const input = process.argv[2]
+const numOfRepetitions = process.argv[3] || 1
 
-/* function testPerceptron (filepath) {
-  // console.log('in testPerception')
-  fs.readFile(filepath, 'utf-8', (err, data) => {
-    if (err) console.error(err)
-    perceptronTrainer.trainPerceptron(JSON.parse(data))
-  })
-} */
+switch (input) {
+  case '--sigmoid':
+    perceptronTrainer.trainNeuron(numOfRepetitions, true)
+    break
+  case '--perceptron':
+    perceptronTrainer.trainNeuron(numOfRepetitions, false)
+    break
+  case '--help':
+  default:
+    printHelp()
+    break
+}
 
-// console.log(input)
-
-/* if (process.argv[2]) net.run(input)
-else testPerceptron(path.join(__dirname, 'data.json')) */
-
-perceptronTrainer.trainPerceptron()
+function printHelp () {
+  const helpMessage = `Welcome to this neural net program.
+    add '--sigmoid' to train a single sigmoid neuron
+    add '--perceptron' to train a single perceptron neuron
+    add another argument to choose the number of neurons to train, to get an average over each of them. If no input is given it will train 100 neurons`
+  console.log(helpMessage)
+}

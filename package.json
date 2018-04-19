@@ -6,7 +6,11 @@
   "author": "catherinefromont <catherinegfromont@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node index"
+    "start": "node index",
+    "perceptron-neuron": "node index --perceptron",
+    "sigmoid-neuron": "node index --sigmoid",
+    "compare-neurons": "node index --compare-neurons",
+    "man": "node index --help"
   },
   "dependencies": {
     "lodash": "^4.17.5",
