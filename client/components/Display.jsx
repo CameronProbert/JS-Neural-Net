@@ -1,6 +1,8 @@
 import React from 'react'
+import _ from 'lodash'
 
 import Axes from './Axes'
+import Point from './Point'
 
 const trainPerceptron = require('../neural-nets/perceptronTrainer')
 
@@ -16,21 +18,41 @@ class Display extends React.Component {
   constructor (props) {
     super(props)
 
-    const perceptronData = trainPerceptron.trainNeuron(1, null, null, null, true)
-    const perceptron = perceptronData.perceptron
-    const a = perceptronData.a
-    const b = perceptronData.b
-
     // Binds
     this.handleClick = this.handleClick.bind(this)
+    this.addDataPoints = this.addDataPoints.bind(this)
 
     // a and b refer to the line of the graph, ax + b
     this.state = {
-      a: a || testA,
-      b: b || testB,
-      perceptron,
+      a: null,
+      b: null,
+      perceptron: null,
       dataPoints: []
     }
+  }
+
+  componentDidMount () {
+    const a = _.random(-2, 2, true)
+    const b = _.random(-50, 50)
+
+    const perceptronData = trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true)
+    const perceptron = perceptronData.perceptron
+
+    this.setState({
+      a,
+      b,
+      perceptron
+    })
+  }
+
+  /**
+   * Sets the data points to display in the graph
+   * @param {[[x, y]]} points an array of points. Points should look like [x, y]
+   */
+  addDataPoints (points) {
+    this.setState({
+      dataPoints: [...points]
+    })
   }
 
   setPerceptron (perceptron) {
@@ -46,18 +68,23 @@ class Display extends React.Component {
   render () {
     const yIntLeft = cy - yIntercept(this.state.a, -100, this.state.b) * scale
     const yIntRight = cy - yIntercept(this.state.a, 100, this.state.b) * scale
+    let key = 0
 
     return (
       <div className='display-wrapper'>
         <div className='display'>
           <svg onClick={this.handleClick} width={svgSize} height={svgSize}>
             <Axes svgSize={svgSize} />
-            <line
+            {this.state.perceptron && (<line
               className='gradientLine'
               x1="0" y1={yIntLeft}
               x2={svgSize} y2={yIntRight}
-            />
-
+            />)}
+            {this.state.dataPoints.map(point => {
+              const x = point[0]
+              const y = point[1]
+              return <Point key={`${x}${y}${key++}`} svgSize={svgSize} x={(x + svgSize / 2) * scale} y={(y + svgSize / 2) * scale * -1} />
+            })}
           </svg>
         </div>
       </div>
