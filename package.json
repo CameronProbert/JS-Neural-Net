@@ -8,7 +8,12 @@
   "scripts": {
     "start": "webpack && node server",
     "dev": "node server & webpack --watch",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "perceptron-neuron": "node index --perceptron",
+    "sigmoid-neuron": "node index --sigmoid",
+    "compare-neurons": "node index --compare-neurons",
+    "compare-neurons-async": "node index --perceptron & node index --sigmoid",
+    "man": "node index --help"
   },
   "babel": {
     "presets": [
