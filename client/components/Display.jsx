@@ -16,7 +16,7 @@ class Display extends React.Component {
   constructor (props) {
     super(props)
 
-    const perceptronData = trainPerceptron.trainPerceptron()
+    const perceptronData = trainPerceptron.trainNeuron(1, null, null, null, true)
     const perceptron = perceptronData.perceptron
     const a = perceptronData.a
     const b = perceptronData.b
@@ -40,7 +40,7 @@ class Display extends React.Component {
   }
 
   handleClick (e) {
-    console.log('clicked')
+    console.log(`Clicked at ${e.clientX}, ${e.clientY}`)
   }
 
   render () {
