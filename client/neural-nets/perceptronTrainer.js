@@ -4,7 +4,7 @@ const Perceptron = require('./perceptron')
 const SigmoidNeuron = require('./sigmoidNeuron')
 
 const maxIterations = 1000000
-const printInterval = 50000
+const printInterval = 500000
 let a = _.random(-2, 2, true)
 let b = _.random(-50, 50)
 const learningRateMax = 3
@@ -29,11 +29,14 @@ function isAboveLine (x, y) {
 function train (perceptron, percentCompleteFn, debugMode) {
   let numCorrect = 0
   let lastCorrect = 0
+  const allPoints = []
   for (let i = 0; i < maxIterations; i++) {
     const point = [
       _.random(-100, 100),
       _.random(-100, 100)
     ]
+
+    allPoints.push(point)
 
     const actual = perceptron.process(point)
     const expected = isAboveLine(point[0], point[1])
@@ -50,8 +53,8 @@ function train (perceptron, percentCompleteFn, debugMode) {
     const learningRate = learningRateMax - (learningRateMax * (i / maxIterations))
     perceptron.adjust(point, difference, learningRate)
 
-    if (percentCompleteFn) {
-      percentCompleteFn(i / maxIterations)
+    if (percentCompleteFn && (i + 1) % printInterval === 0) {
+      percentCompleteFn(allPoints)
     }
   }
   return numCorrect

@@ -10,7 +10,7 @@
     "dev": "node server & webpack --watch",
     "test": "jest --watchAll",
     "perceptron-neuron": "node index --perceptron",
-    "sigmoid-neuron": "node index --sigmoid",
+    "sigmoid-neuron": "node client/index.js --sigmoid",
     "compare-neurons": "node index --compare-neurons",
     "compare-neurons-async": "node index --perceptron & node index --sigmoid",
     "man": "node index --help"

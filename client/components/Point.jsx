@@ -4,7 +4,7 @@ const Point = props => {
   const radius = props.svgSize / 400
 
   return (
-    <circle cx='' cy='' r={radius}
+    <circle cx={props.x} cy={props.y} r={radius} />
   )
 }
 
