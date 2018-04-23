@@ -10,6 +10,7 @@
     "perceptron-neuron": "node index --perceptron",
     "sigmoid-neuron": "node index --sigmoid",
     "compare-neurons": "node index --compare-neurons",
+    "compare-neurons-async": "node index --perceptron & node index --sigmoid",
     "man": "node index --help"
   },
   "dependencies": {

@@ -58,7 +58,7 @@ function trainNeuron (neuronsToTrain, isSigmoid) {
     let neuron = {}
     if (isSigmoid) neuron = new SigmoidNeuron(2)
     else neuron = new Perceptron(2)
-    neuronType = typeof neuron
+    neuronType = neuron.constructor.name
     numCorrect.push(train(neuron, neuronsToTrain === 1))
   }
   console.log(`Average of ${neuronsToTrain} repetitions for a ${neuronType}:
