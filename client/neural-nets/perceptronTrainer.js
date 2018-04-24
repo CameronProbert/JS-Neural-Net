@@ -61,21 +61,26 @@ function train (perceptron, percentCompleteFn, debugMode) {
 }
 
 function trainNeuron (neuronsToTrain, chosenA, chosenB, percentCompleteFn, isSigmoid) {
-  const numCorrect = []
-  let neuronType = null
-  for (let i = 0; i < neuronsToTrain; i++) {
-    a = chosenA || _.random(-2, 2, true)
-    b = chosenB || _.random(-50, 50)
-    // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
-    let neuron = {}
-    if (isSigmoid) neuron = new SigmoidNeuron(2)
-    else neuron = new Perceptron(2)
-    neuronType = neuron.constructor.name
-    numCorrect.push(train(neuron, percentCompleteFn, neuronsToTrain === 1))
-    if (neuronsToTrain === 1) return { neuron, a, b }
-  }
-  console.log(`Average of ${neuronsToTrain} repetitions for a ${neuronType}:
+  return new Promise((resolve, reject) => {
+    const numCorrect = []
+    let neuronType = null
+    for (let i = 0; i < neuronsToTrain; i++) {
+      a = chosenA || _.random(-2, 2, true)
+      b = chosenB || _.random(-50, 50)
+      // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
+      let neuron = {}
+      if (isSigmoid) neuron = new SigmoidNeuron(2)
+      else neuron = new Perceptron(2)
+      neuronType = neuron.constructor.name
+      numCorrect.push(train(neuron, percentCompleteFn, neuronsToTrain === 1))
+      if (neuronsToTrain === 1) {
+        resolve({ neuron, a, b })
+      }
+    }
+    console.log(`Average of ${neuronsToTrain} repetitions for a ${neuronType}:
     ${numCorrect.reduce((sum, item) => sum + item, 0) / neuronsToTrain}`)
+    reject(new Error('More than one neuron. If you were expecting this, don\'t worry about it.'))
+  })
 }
 
 module.exports = {

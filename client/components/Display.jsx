@@ -35,14 +35,16 @@ class Display extends React.Component {
     const a = _.random(-2, 2, true)
     const b = _.random(-50, 50)
 
-    const perceptronData = trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true)
-    const perceptron = perceptronData.perceptron
-
-    this.setState({
-      a,
-      b,
-      perceptron
-    })
+    console.log('Training perceptron...')
+    trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true)
+      .then(perceptronData => {
+        console.log('Perceptron trained!')
+        this.setState({
+          a,
+          b,
+          perceptron: perceptronData.perceptron
+        })
+      })
   }
 
   /**

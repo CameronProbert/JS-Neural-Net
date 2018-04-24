@@ -36749,16 +36749,19 @@ var Display = function (_React$Component) {
   _createClass(Display, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       var a = _lodash2.default.random(-2, 2, true);
       var b = _lodash2.default.random(-50, 50);
 
-      var perceptronData = trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true);
-      var perceptron = perceptronData.perceptron;
-
-      this.setState({
-        a: a,
-        b: b,
-        perceptron: perceptron
+      console.log('Training perceptron...');
+      trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true).then(function (perceptronData) {
+        console.log('Perceptron trained!');
+        _this2.setState({
+          a: a,
+          b: b,
+          perceptron: perceptronData.perceptron
+        });
       });
     }
 
@@ -37050,21 +37053,26 @@ function train(perceptron, percentCompleteFn, debugMode) {
 }
 
 function trainNeuron(neuronsToTrain, chosenA, chosenB, percentCompleteFn, isSigmoid) {
-  var numCorrect = [];
-  var neuronType = null;
-  for (var i = 0; i < neuronsToTrain; i++) {
-    a = chosenA || _.random(-2, 2, true);
-    b = chosenB || _.random(-50, 50);
-    // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
-    var neuron = {};
-    if (isSigmoid) neuron = new SigmoidNeuron(2);else neuron = new Perceptron(2);
-    neuronType = neuron.constructor.name;
-    numCorrect.push(train(neuron, percentCompleteFn, neuronsToTrain === 1));
-    if (neuronsToTrain === 1) return { neuron: neuron, a: a, b: b };
-  }
-  console.log('Average of ' + neuronsToTrain + ' repetitions for a ' + neuronType + ':\n    ' + numCorrect.reduce(function (sum, item) {
-    return sum + item;
-  }, 0) / neuronsToTrain);
+  return new Promise(function (resolve, reject) {
+    var numCorrect = [];
+    var neuronType = null;
+    for (var i = 0; i < neuronsToTrain; i++) {
+      a = chosenA || _.random(-2, 2, true);
+      b = chosenB || _.random(-50, 50);
+      // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
+      var neuron = {};
+      if (isSigmoid) neuron = new SigmoidNeuron(2);else neuron = new Perceptron(2);
+      neuronType = neuron.constructor.name;
+      numCorrect.push(train(neuron, percentCompleteFn, neuronsToTrain === 1));
+      if (neuronsToTrain === 1) {
+        resolve({ neuron: neuron, a: a, b: b });
+      }
+    }
+    console.log('Average of ' + neuronsToTrain + ' repetitions for a ' + neuronType + ':\n    ' + numCorrect.reduce(function (sum, item) {
+      return sum + item;
+    }, 0) / neuronsToTrain);
+    reject(new Error('More than one neuron. If you were expecting this, don\'t worry about it.'));
+  });
 }
 
 module.exports = {
