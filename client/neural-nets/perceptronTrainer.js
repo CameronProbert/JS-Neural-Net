@@ -3,34 +3,45 @@ const _ = require('lodash')
 const Perceptron = require('./perceptron')
 const SigmoidNeuron = require('./sigmoidNeuron')
 
-const maxIterations = 1000000
-const printInterval = 500000
+const maxIterations = 10000 // How many points of training data to feed a neuron
+const printInterval = 500 // How often to print to the console and send data to the Display component
+
+// Initial a and b for the straight line equation 'y = ax + b'
 let a = _.random(-2, 2, true)
 let b = _.random(-50, 50)
-const learningRateMax = 3
+
+const learningRateMax = 3 // While training, learning rate starts at this and -> 0 as i -> maxIterations
 
 /**
  * Returns the y value of the function ax + b
- * @param {*} x The x co-ordinate value of the graph
+ * @param {Number} x The x co-ordinate value of the graph
  */
 function test (x) {
   return a * x + b
 }
 
+/**
+ * Returns whether mathematically the given x and y is above or below the line 'ax + b'
+ * @param {Number} x The x-coordinate
+ * @param {Number} y The y-coordinate
+ */
 function isAboveLine (x, y) {
   return test(x) < y ? 0 : 1
 }
 
 /**
- * Trains a perceptron
- * @param {*} perceptron  The Perceptron to train
- * @param {*} percentCompleteFn Returns the percentage complete as a parameter to this function
+ * Trains a neutron
+ * @param {Neutron} neutron  The neutron to train
+ * @param {Function([[x1, y1], ...])} percentCompleteFn Returns the percentage complete as a parameter to this function
  */
-function train (perceptron, percentCompleteFn, debugMode) {
+function train (neutron, percentCompleteFn, debugMode) {
   let numCorrect = 0
   let lastCorrect = 0
   const allPoints = []
+
+  // Train the neuron maxIterations times
   for (let i = 0; i < maxIterations; i++) {
+    // Creates a random 'x, y' point to feed the neuron
     const point = [
       _.random(-100, 100),
       _.random(-100, 100)
@@ -38,21 +49,32 @@ function train (perceptron, percentCompleteFn, debugMode) {
 
     allPoints.push(point)
 
-    const actual = perceptron.process(point)
+    // Test whether the neuron thinks it is above or below the line
+    const actual = neutron.process(point)
+    // Test whether the point is actually above or below the line
     const expected = isAboveLine(point[0], point[1])
+
+    // If correct, increment the numCorrect count
     if (actual === expected) numCorrect++
+
+    // If 'i' is a multiple of 'printInterval'
     if ((i + 1) % printInterval === 0) {
+      // Print debug statements
       if (debugMode) {
         console.log(`Correct: ${numCorrect}/${i + 1}\t\t Last ${printInterval} correct: ${((numCorrect - lastCorrect) / printInterval * 100).toFixed(3)}%`)
-        console.log(perceptron.weightsToString())
+        console.log(neutron.weightsToString())
       }
+
+      // Save the number correct until next print section
       lastCorrect = numCorrect
     }
 
+    // Adjust the neuron's weights and bias
     const difference = expected - actual
     const learningRate = learningRateMax - (learningRateMax * (i / maxIterations))
-    perceptron.adjust(point, difference, learningRate)
+    neutron.adjust(point, difference, learningRate)
 
+    // If there is a given function to perform when certain tasks are complete, do it now
     if (percentCompleteFn && (i + 1) % printInterval === 0) {
       percentCompleteFn(allPoints)
     }
@@ -60,14 +82,23 @@ function train (perceptron, percentCompleteFn, debugMode) {
   return numCorrect
 }
 
-function trainNeuron (neuronsToTrain, chosenA, chosenB, percentCompleteFn, isSigmoid) {
+/**
+ * Trains 'neuronsToTrain' neurons, then returns a promise with the trained neuron
+ * @param {[Number]} neuronsToTrain Number of neurons to train, default is 1
+ * @param {[Number]} chosenA a, from the equation 'y = ax + b'
+ * @param {[Number]} chosenB b, from the equation 'y = ax + b'
+ * @param {[Function([[x1, y1], ...])]} percentCompleteFn Function to perform periodically
+ * @param {[Boolean]} isSigmoid True -> SigmoidNeuron | False -> Perceptron
+ *
+ * @returns {Promise} Returns a promise containing an object with a neuron + the a & b it was trained for
+ */
+function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, isSigmoid) {
   return new Promise((resolve, reject) => {
     const numCorrect = []
     let neuronType = null
     for (let i = 0; i < neuronsToTrain; i++) {
       a = chosenA || _.random(-2, 2, true)
       b = chosenB || _.random(-50, 50)
-      // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
       let neuron = {}
       if (isSigmoid) neuron = new SigmoidNeuron(2)
       else neuron = new Perceptron(2)
