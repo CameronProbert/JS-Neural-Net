@@ -15,6 +15,15 @@ class SigmoidNeuron extends Perceptron {
     }
     return toBinary(sigmoid(sum))
   }
+
+  adjust (inputs, difference, learningRate) {
+    let newWeights = []
+    for (let i = 0; i < inputs.length; i++) {
+      newWeights[i] = this.weights[i] + (inputs[i] * difference * learningRate)
+    }
+    const newBias = this.bias + (difference * learningRate)
+    return new SigmoidNeuron(this.weights.length, newWeights, newBias)
+  }
 }
 
 /**

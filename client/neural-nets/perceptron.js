@@ -33,10 +33,12 @@ class Perceptron {
   }
 
   adjust (inputs, difference, learningRate) {
+    let newWeights = []
     for (let i = 0; i < inputs.length; i++) {
-      this.weights[i] += (inputs[i] * difference * learningRate)
+      newWeights[i] = this.weights[i] + (inputs[i] * difference * learningRate)
     }
-    this.bias += (difference * learningRate)
+    const newBias = this.bias + (difference * learningRate)
+    return new Perceptron(this.weights.length, newWeights, newBias)
   }
 }
 

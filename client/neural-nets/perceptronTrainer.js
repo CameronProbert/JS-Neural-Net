@@ -30,11 +30,11 @@ function isAboveLine (x, y) {
 }
 
 /**
- * Trains a neutron
- * @param {Neutron} neutron  The neutron to train
+ * Trains a neuron
+ * @param {Neuron} neuron  The neuron to train
  * @param {Function([[x1, y1], ...])} percentCompleteFn Returns the percentage complete as a parameter to this function
  */
-function train (neutron, percentCompleteFn, debugMode) {
+function train (neuron, percentCompleteFn, debugMode) {
   let numCorrect = 0
   let lastCorrect = 0
   const allPoints = []
@@ -49,7 +49,7 @@ function train (neutron, percentCompleteFn, debugMode) {
     }
 
     // Test whether the neuron thinks it is above or below the line
-    const actual = neutron.process(point.toArray())
+    const actual = neuron.process(point.toArray())
     // Test whether the point is actually above or below the line
     const expected = isAboveLine(point.x, point.y)
 
@@ -61,7 +61,7 @@ function train (neutron, percentCompleteFn, debugMode) {
       // Print debug statements
       if (debugMode) {
         console.log(`Correct: ${numCorrect}/${i + 1}\t\t Last ${printInterval} correct: ${((numCorrect - lastCorrect) / printInterval * 100).toFixed(3)}%`)
-        console.log(neutron.weightsToString())
+        console.log(neuron.weightsToString())
       }
 
       // Save the number correct until next print section
@@ -71,7 +71,7 @@ function train (neutron, percentCompleteFn, debugMode) {
     // Adjust the neuron's weights and bias
     const difference = expected - actual
     const learningRate = learningRateMax - (learningRateMax * (i / maxIterations))
-    neutron.adjust(point.toArray(), difference, learningRate)
+    neuron = neuron.adjust(point.toArray(), difference, learningRate)
 
     point.expected = expected
     point.actual = actual
@@ -79,11 +79,11 @@ function train (neutron, percentCompleteFn, debugMode) {
 
     // If there is a given function to perform when certain tasks are complete, do it now
     if (percentCompleteFn && (i + 1) % printInterval === 0) {
-      console.log('Calling percent complete function')
+      //console.log('Calling percent complete function')
       percentCompleteFn(allPoints)
     }
   }
-  return numCorrect
+  return {numCorrect, neuron}
 }
 
 /**
@@ -100,6 +100,7 @@ function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, i
   return new Promise((resolve, reject) => {
     const numCorrect = []
     let neuronType = null
+    let trainedNeuron = null
     for (let i = 0; i < neuronsToTrain; i++) {
       a = chosenA || _.random(-2, 2, true)
       b = chosenB || _.random(-50, 50)
@@ -107,9 +108,10 @@ function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, i
       if (isSigmoid) neuron = new SigmoidNeuron(2)
       else neuron = new Perceptron(2)
       neuronType = neuron.constructor.name
-      numCorrect.push(train(neuron, percentCompleteFn, neuronsToTrain === 1))
+      trainedNeuron = train(neuron, percentCompleteFn, neuronsToTrain === 1)
+      numCorrect.push(trainedNeuron.numCorrect)
       if (neuronsToTrain === 1) {
-        resolve({ neuron, a, b })
+        resolve({ neuron: trainedNeuron.neuron, a, b })
       }
     }
     console.log(`Average of ${neuronsToTrain} repetitions for a ${neuronType}:
