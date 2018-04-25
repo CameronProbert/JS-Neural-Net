@@ -5,10 +5,10 @@ const _ = require('lodash')
  * @param {Integer} numInputs the number of inputs for the perceptron to have
  */
 class Perceptron {
-  constructor (numInputs) {
+  constructor (numInputs, weights, bias) {
     // Set up variables
-    this.weights = randomiseWeights(numInputs)
-    this.bias = randomiseBias()
+    this.weights = weights || randomiseWeights(numInputs)
+    this.bias = bias || randomiseBias()
   }
 
   toString () {
