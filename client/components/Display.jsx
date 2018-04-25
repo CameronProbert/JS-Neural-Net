@@ -6,7 +6,7 @@ import Point from './Point'
 
 const trainPerceptron = require('../neural-nets/perceptronTrainer')
 
-const svgSize = 600
+const svgSize = 800
 const scale = svgSize / 200
 const cx = svgSize / 2
 const cy = svgSize / 2
@@ -77,17 +77,26 @@ class Display extends React.Component {
         <div className='display'>
           <svg onClick={this.handleClick} width={svgSize} height={svgSize}>
             <Axes svgSize={svgSize} />
-            {this.state.perceptron && (<line
+            <line
               className='gradientLine'
               x1="0" y1={yIntLeft}
               x2={svgSize} y2={yIntRight}
-            />)}
-            {this.state.dataPoints.map(point => {
-              const x = point[0]
-              const y = point[1]
-              return <Point key={`${x}${y}${key++}`} svgSize={svgSize} x={(x + svgSize / 2) * scale} y={(y + svgSize / 2) * scale * -1} />
+            />)
+            {this.state.dataPoints.length > 0 && this.state.dataPoints.map(point => {
+              const x = point.x
+              const y = point.y
+              return <Point
+                key={`${x}${y}${key++}`}
+                svgSize={svgSize}
+                x={(x * scale + svgSize / 2)}
+                y={((y * -1) * scale + svgSize / 2)}
+                correct={point.expected - point.actual === 0}
+                isAboveLine={point.actual}
+              />
             })}
           </svg>
+          <hr/>
+          <span>Equation: y = {Number(this.state.a).toFixed(3)}x + {this.state.b}</span>
         </div>
       </div>
     )

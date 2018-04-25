@@ -36716,7 +36716,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var trainPerceptron = __webpack_require__(33);
 
-var svgSize = 600;
+var svgSize = 800;
 var scale = svgSize / 200;
 var cx = svgSize / 2;
 var cy = svgSize / 2;
@@ -36806,16 +36806,33 @@ var Display = function (_React$Component) {
             'svg',
             { onClick: this.handleClick, width: svgSize, height: svgSize },
             _react2.default.createElement(_Axes2.default, { svgSize: svgSize }),
-            this.state.perceptron && _react2.default.createElement('line', {
+            _react2.default.createElement('line', {
               className: 'gradientLine',
               x1: '0', y1: yIntLeft,
               x2: svgSize, y2: yIntRight
             }),
-            this.state.dataPoints.map(function (point) {
-              var x = point[0];
-              var y = point[1];
-              return _react2.default.createElement(_Point2.default, { key: '' + x + y + key++, svgSize: svgSize, x: (x + svgSize / 2) * scale, y: (y + svgSize / 2) * scale * -1 });
+            ')',
+            this.state.dataPoints.length > 0 && this.state.dataPoints.map(function (point) {
+              var x = point.x;
+              var y = point.y;
+              return _react2.default.createElement(_Point2.default, {
+                key: '' + x + y + key++,
+                svgSize: svgSize,
+                x: x * scale + svgSize / 2,
+                y: y * -1 * scale + svgSize / 2,
+                correct: point.expected - point.actual === 0,
+                isAboveLine: point.actual
+              });
             })
+          ),
+          _react2.default.createElement('hr', null),
+          _react2.default.createElement(
+            'span',
+            null,
+            'Equation: y = ',
+            Number(this.state.a).toFixed(3),
+            'x + ',
+            this.state.b
           )
         )
       );
@@ -36980,8 +36997,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Point = function Point(props) {
   var radius = props.svgSize / 400;
+  var colour = 'red';
+  if (props.correct && props.isAboveLine) {
+    colour = 'green';
+  }
+  if (props.correct && !props.isAboveLine) {
+    colour = 'blue';
+  }
 
-  return _react2.default.createElement('circle', { cx: props.x, cy: props.y, r: radius });
+  return _react2.default.createElement('circle', { cx: props.x, cy: props.y, r: radius, fill: colour });
 };
 
 exports.default = Point;
@@ -36998,68 +37022,113 @@ var _ = __webpack_require__(5);
 var Perceptron = __webpack_require__(13);
 var SigmoidNeuron = __webpack_require__(34);
 
-var maxIterations = 1000000;
-var printInterval = 500000;
+var maxIterations = 10000; // How many points of training data to feed a neuron
+var printInterval = 1000; // How often to print to the console and send data to the Display component
+
+// Initial a and b for the straight line equation 'y = ax + b'
 var a = _.random(-2, 2, true);
 var b = _.random(-50, 50);
-var learningRateMax = 3;
+
+var learningRateMax = 3; // While training, learning rate starts at this and -> 0 as i -> maxIterations
 
 /**
  * Returns the y value of the function ax + b
- * @param {*} x The x co-ordinate value of the graph
+ * @param {Number} x The x co-ordinate value of the graph
  */
 function test(x) {
   return a * x + b;
 }
 
+/**
+ * Returns whether mathematically the given x and y is above or below the line 'ax + b'
+ * @param {Number} x The x-coordinate
+ * @param {Number} y The y-coordinate
+ */
 function isAboveLine(x, y) {
   return test(x) < y ? 0 : 1;
 }
 
 /**
- * Trains a perceptron
- * @param {*} perceptron  The Perceptron to train
- * @param {*} percentCompleteFn Returns the percentage complete as a parameter to this function
+ * Trains a neutron
+ * @param {Neutron} neutron  The neutron to train
+ * @param {Function([[x1, y1], ...])} percentCompleteFn Returns the percentage complete as a parameter to this function
  */
-function train(perceptron, percentCompleteFn, debugMode) {
+function train(neutron, percentCompleteFn, debugMode) {
   var numCorrect = 0;
   var lastCorrect = 0;
   var allPoints = [];
+
+  // Train the neuron maxIterations times
   for (var i = 0; i < maxIterations; i++) {
-    var point = [_.random(-100, 100), _.random(-100, 100)];
+    // Creates a random 'x, y' point to feed the neuron
+    var point = {
+      x: _.random(-100, 100),
+      y: _.random(-100, 100),
+      toArray: function toArray() {
+        return [this.x, this.y];
+      }
 
-    allPoints.push(point);
+      // Test whether the neuron thinks it is above or below the line
+    };var actual = neutron.process(point.toArray());
+    // Test whether the point is actually above or below the line
+    var expected = isAboveLine(point.x, point.y);
 
-    var actual = perceptron.process(point);
-    var expected = isAboveLine(point[0], point[1]);
+    // If correct, increment the numCorrect count
     if (actual === expected) numCorrect++;
+
+    // If 'i' is a multiple of 'printInterval'
     if ((i + 1) % printInterval === 0) {
+      // Print debug statements
       if (debugMode) {
         console.log('Correct: ' + numCorrect + '/' + (i + 1) + '\t\t Last ' + printInterval + ' correct: ' + ((numCorrect - lastCorrect) / printInterval * 100).toFixed(3) + '%');
-        console.log(perceptron.weightsToString());
+        console.log(neutron.weightsToString());
       }
+
+      // Save the number correct until next print section
       lastCorrect = numCorrect;
     }
 
+    // Adjust the neuron's weights and bias
     var difference = expected - actual;
     var learningRate = learningRateMax - learningRateMax * (i / maxIterations);
-    perceptron.adjust(point, difference, learningRate);
+    neutron.adjust(point.toArray(), difference, learningRate);
 
+    point.expected = expected;
+    point.actual = actual;
+    allPoints.push(point);
+
+    // If there is a given function to perform when certain tasks are complete, do it now
     if (percentCompleteFn && (i + 1) % printInterval === 0) {
+      console.log('Calling percent complete function');
       percentCompleteFn(allPoints);
     }
   }
   return numCorrect;
 }
 
-function trainNeuron(neuronsToTrain, chosenA, chosenB, percentCompleteFn, isSigmoid) {
+/**
+ * Trains 'neuronsToTrain' neurons, then returns a promise with the trained neuron
+ * @param {[Number]} neuronsToTrain Number of neurons to train, default is 1
+ * @param {[Number]} chosenA a, from the equation 'y = ax + b'
+ * @param {[Number]} chosenB b, from the equation 'y = ax + b'
+ * @param {[Function([[x1, y1], ...])]} percentCompleteFn Function to perform periodically
+ * @param {[Boolean]} isSigmoid True -> SigmoidNeuron | False -> Perceptron
+ *
+ * @returns {Promise} Returns a promise containing an object with a neuron + the a & b it was trained for
+ */
+function trainNeuron() {
+  var neuronsToTrain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var chosenA = arguments[1];
+  var chosenB = arguments[2];
+  var percentCompleteFn = arguments[3];
+  var isSigmoid = arguments[4];
+
   return new Promise(function (resolve, reject) {
     var numCorrect = [];
     var neuronType = null;
     for (var i = 0; i < neuronsToTrain; i++) {
       a = chosenA || _.random(-2, 2, true);
       b = chosenB || _.random(-50, 50);
-      // console.log(`Gradient is: ${a.toFixed(2)}x + ${b}`)
       var neuron = {};
       if (isSigmoid) neuron = new SigmoidNeuron(2);else neuron = new Perceptron(2);
       neuronType = neuron.constructor.name;
