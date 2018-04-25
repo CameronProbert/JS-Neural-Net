@@ -4,7 +4,7 @@ const Perceptron = require('./perceptron')
 const SigmoidNeuron = require('./sigmoidNeuron')
 
 const maxIterations = 10000 // How many points of training data to feed a neuron
-const printInterval = 500 // How often to print to the console and send data to the Display component
+const printInterval = 1000 // How often to print to the console and send data to the Display component
 
 // Initial a and b for the straight line equation 'y = ax + b'
 let a = _.random(-2, 2, true)
@@ -42,17 +42,16 @@ function train (neutron, percentCompleteFn, debugMode) {
   // Train the neuron maxIterations times
   for (let i = 0; i < maxIterations; i++) {
     // Creates a random 'x, y' point to feed the neuron
-    const point = [
-      _.random(-100, 100),
-      _.random(-100, 100)
-    ]
-
-    allPoints.push(point)
+    const point = {
+      x: _.random(-100, 100),
+      y: _.random(-100, 100),
+      toArray: function () { return [this.x, this.y] }
+    }
 
     // Test whether the neuron thinks it is above or below the line
-    const actual = neutron.process(point)
+    const actual = neutron.process(point.toArray())
     // Test whether the point is actually above or below the line
-    const expected = isAboveLine(point[0], point[1])
+    const expected = isAboveLine(point.x, point.y)
 
     // If correct, increment the numCorrect count
     if (actual === expected) numCorrect++
@@ -72,10 +71,15 @@ function train (neutron, percentCompleteFn, debugMode) {
     // Adjust the neuron's weights and bias
     const difference = expected - actual
     const learningRate = learningRateMax - (learningRateMax * (i / maxIterations))
-    neutron.adjust(point, difference, learningRate)
+    neutron.adjust(point.toArray(), difference, learningRate)
+
+    point.expected = expected
+    point.actual = actual
+    allPoints.push(point)
 
     // If there is a given function to perform when certain tasks are complete, do it now
     if (percentCompleteFn && (i + 1) % printInterval === 0) {
+      console.log('Calling percent complete function')
       percentCompleteFn(allPoints)
     }
   }
