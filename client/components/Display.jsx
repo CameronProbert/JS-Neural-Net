@@ -52,6 +52,7 @@ class Display extends React.Component {
    * @param {[[x, y]]} points an array of points. Points should look like [x, y]
    */
   addDataPoints (points) {
+    console.log('setting state to datapoints')
     this.setState({
       dataPoints: [...points]
     })
@@ -71,17 +72,12 @@ class Display extends React.Component {
     const yIntLeft = cy - yIntercept(this.state.a, -100, this.state.b) * scale
     const yIntRight = cy - yIntercept(this.state.a, 100, this.state.b) * scale
     let key = 0
+    console.log('=== RENDERING ===')
 
     return (
       <div className='display-wrapper'>
         <div className='display'>
           <svg onClick={this.handleClick} width={svgSize} height={svgSize}>
-            <Axes svgSize={svgSize} />
-            <line
-              className='gradientLine'
-              x1="0" y1={yIntLeft}
-              x2={svgSize} y2={yIntRight}
-            />)
             {this.state.dataPoints.length > 0 && this.state.dataPoints.map(point => {
               const x = point.x
               const y = point.y
@@ -94,6 +90,12 @@ class Display extends React.Component {
                 isAboveLine={point.actual}
               />
             })}
+            <Axes svgSize={svgSize} />
+            <line
+              className='gradientLine'
+              x1="0" y1={yIntLeft}
+              x2={svgSize} y2={yIntRight}
+            />)
           </svg>
           <hr/>
           <span>Equation: y = {Number(this.state.a).toFixed(3)}x + {this.state.b}</span>
