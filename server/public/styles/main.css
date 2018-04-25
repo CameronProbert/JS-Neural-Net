@@ -17,11 +17,11 @@
 }
 
 .axis {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: black;
 }
 
 .gradientLine {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: rgb(255, 0, 0);
 }
