@@ -16,8 +16,8 @@ const learningRateMax = 3 // While training, learning rate starts at this and ->
  * Returns the y value of the function ax + b
  * @param {Number} x The x co-ordinate value of the graph
  */
-function test (x) {
-  return a * x + b
+function test (x, testA = a, testB = b) {
+  return testA * x + testB
 }
 
 /**
@@ -25,8 +25,8 @@ function test (x) {
  * @param {Number} x The x-coordinate
  * @param {Number} y The y-coordinate
  */
-function isAboveLine (x, y) {
-  return test(x) < y ? 0 : 1
+export function isAboveLine (x, y, testA = a, testB = b) {
+  return test(x, testA, testB) < y ? 0 : 1
 }
 
 /**
@@ -96,9 +96,9 @@ function train (neuron, percentCompleteFn, debugMode) {
  *
  * @returns {Promise} Returns a promise containing an object with a neuron + the a & b it was trained for
  */
-function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, isSigmoid) {
+export function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, isSigmoid) {
   return new Promise((resolve, reject) => {
-    const numCorrect = []
+    let numCorrect = []
     let neuronType = null
     let trainedNeuron = null
     for (let i = 0; i < neuronsToTrain; i++) {
@@ -109,7 +109,7 @@ function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, i
       else neuron = new Perceptron(2)
       neuronType = neuron.constructor.name
       trainedNeuron = train(neuron, percentCompleteFn, neuronsToTrain === 1)
-      numCorrect.push(trainedNeuron.numCorrect)
+      numCorrect = [...numCorrect, trainedNeuron.numCorrect]
       if (neuronsToTrain === 1) {
         resolve({ neuron: trainedNeuron.neuron, a, b })
       }
@@ -120,6 +120,4 @@ function trainNeuron (neuronsToTrain = 1, chosenA, chosenB, percentCompleteFn, i
   })
 }
 
-module.exports = {
-  trainNeuron
-}
+export default trainNeuron

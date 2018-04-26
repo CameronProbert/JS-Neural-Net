@@ -4,15 +4,12 @@ import _ from 'lodash'
 import Axes from './Axes'
 import Point from './Point'
 
-const trainPerceptron = require('../neural-nets/perceptronTrainer')
+import {trainNeuron, isAboveLine} from '../neural-nets/perceptronTrainer'
 
 const svgSize = 800
 const scale = svgSize / 200
-const cx = svgSize / 2
+// const cx = svgSize / 2
 const cy = svgSize / 2
-
-const testA = 1
-const testB = 50
 
 class Display extends React.Component {
   constructor (props) {
@@ -26,8 +23,12 @@ class Display extends React.Component {
     this.state = {
       a: null,
       b: null,
-      perceptron: null,
-      dataPoints: []
+      neuron: null,
+      dataPoints: [],
+      clickX: 0,
+      clickY: 0,
+      isOverLine: false,
+      hasClicked: false
     }
   }
 
@@ -36,13 +37,13 @@ class Display extends React.Component {
     const b = _.random(-50, 50)
 
     console.log('Training perceptron...')
-    trainPerceptron.trainNeuron(1, a, b, this.addDataPoints, true)
+    trainNeuron(1, a, b, this.addDataPoints, true)
       .then(perceptronData => {
         console.log('Perceptron trained!')
         this.setState({
           a,
           b,
-          perceptron: perceptronData.perceptron
+          neuron: perceptronData.neuron
         })
       })
   }
@@ -58,19 +59,32 @@ class Display extends React.Component {
     })
   }
 
-  setPerceptron (perceptron) {
+  setPerceptron (neuron) {
     this.setState({
-      perceptron
+      neuron
     })
   }
 
   handleClick (e) {
-    console.log(`Clicked at ${e.clientX}, ${e.clientY}`)
+
+    // Convert the x and y of the click into the x and y of the scale
+    const x = ((e.nativeEvent.offsetX) / scale) - 100
+    const y = (((e.nativeEvent.offsetY) / scale) - 100) * -1
+
+    this.setState({
+      hasClicked: true,
+      clickX: x,
+      clickY: y,
+      isOverLine: this.state.neuron.process(x, y) ===
+        isAboveLine(x, y, this.state.a, this.state.b)
+    })
   }
 
   render () {
+    // Find gradient line intercepts
     const yIntLeft = cy - yIntercept(this.state.a, -100, this.state.b) * scale
     const yIntRight = cy - yIntercept(this.state.a, 100, this.state.b) * scale
+
     let key = 0
     console.log('=== RENDERING ===')
 
@@ -98,7 +112,14 @@ class Display extends React.Component {
             />)
           </svg>
           <hr/>
-          <span>Equation: y = {Number(this.state.a).toFixed(3)}x + {this.state.b}</span>
+          <span className='row push-contents-to-sides'>
+            <span>Equation: y = {Number(this.state.a).toFixed(3)}x + {this.state.b || '0'}</span>
+            {this.state.hasClicked && (
+              <span>The neuron thinks
+                ({this.state.clickX}, {this.state.clickY})
+              {this.state.isOverLine ? ' is over the line' : ' is under the line'}</span>
+            )}
+          </span>
         </div>
       </div>
     )
