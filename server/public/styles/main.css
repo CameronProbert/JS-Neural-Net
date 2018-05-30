@@ -1,0 +1,27 @@
+.display-wrapper {
+  margin: 1em;
+  border-radius: 1em;
+  border-style: solid;
+  border-width: 2px;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.display {
+  background-color: antiquewhite;
+  border-radius: 1em;
+  border-style: solid;
+  border-width: 2px;
+  padding: 1em;
+}
+
+.axis {
+  stroke-width: 1px;
+  stroke: black;
+}
+
+.gradientLine {
+  stroke-width: 1px;
+  stroke: rgb(255, 0, 0);
+}
