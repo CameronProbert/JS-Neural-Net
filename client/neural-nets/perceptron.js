@@ -29,7 +29,8 @@ class Perceptron {
     for (let i = 0; i < inputs.length; i++) {
       sum += inputs[i] * this.weights[i]
     }
-    return heaviside(sum)
+    const heavisideVal = heaviside(sum)
+    return {output: heavisideVal, delta: heavisideVal}
   }
 
   adjust (inputs, difference, learningRate) {

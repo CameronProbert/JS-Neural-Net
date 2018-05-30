@@ -13,7 +13,8 @@ class SigmoidNeuron extends Perceptron {
     for (let i = 0; i < inputs.length; i++) {
       sum += inputs[i] * this.weights[i]
     }
-    return toBinary(sigmoid(sum))
+    const sigmoidVal = sigmoid(sum)
+    return {output: toBinary(sigmoidVal), delta: sigmoidVal}
   }
 }
 

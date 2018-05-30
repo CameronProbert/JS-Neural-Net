@@ -10,7 +10,7 @@ const printInterval = 1000 // How often to print to the console and send data to
 let a = _.random(-2, 2, true)
 let b = _.random(-50, 50)
 
-const learningRateMax = 3 // While training, learning rate starts at this and -> 0 as i -> maxIterations
+const learningRateMax = 1 // While training, learning rate starts at this and -> 0 as i -> maxIterations
 
 /**
  * Returns the y value of the function ax + b
@@ -49,12 +49,12 @@ function train (neutron, percentCompleteFn, debugMode) {
     }
 
     // Test whether the neuron thinks it is above or below the line
-    const actual = neutron.process(point.toArray())
+    const result = neutron.process(point.toArray())
     // Test whether the point is actually above or below the line
     const expected = isAboveLine(point.x, point.y)
 
     // If correct, increment the numCorrect count
-    if (actual === expected) numCorrect++
+    if (result.output === expected) numCorrect++
 
     // If 'i' is a multiple of 'printInterval'
     if ((i + 1) % printInterval === 0) {
@@ -69,12 +69,12 @@ function train (neutron, percentCompleteFn, debugMode) {
     }
 
     // Adjust the neuron's weights and bias
-    const difference = expected - actual
+    const difference = expected - result.delta
     const learningRate = learningRateMax - (learningRateMax * (i / maxIterations))
     neutron.adjust(point.toArray(), difference, learningRate)
 
     point.expected = expected
-    point.actual = actual
+    point.actual = result.output
     allPoints.push(point)
 
     // If there is a given function to perform when certain tasks are complete, do it now
