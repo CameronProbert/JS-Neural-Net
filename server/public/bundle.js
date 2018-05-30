@@ -17976,7 +17976,8 @@ var Perceptron = function () {
       for (var i = 0; i < inputs.length; i++) {
         sum += inputs[i] * this.weights[i];
       }
-      return heaviside(sum);
+      var heavisideVal = heaviside(sum);
+      return { output: heavisideVal, delta: heavisideVal };
     }
   }, {
     key: 'adjust',
@@ -37069,12 +37070,12 @@ function train(neutron, percentCompleteFn, debugMode) {
       }
 
       // Test whether the neuron thinks it is above or below the line
-    };var actual = neutron.process(point.toArray());
+    };var result = neutron.process(point.toArray());
     // Test whether the point is actually above or below the line
     var expected = isAboveLine(point.x, point.y);
 
     // If correct, increment the numCorrect count
-    if (actual === expected) numCorrect++;
+    if (result.output === expected) numCorrect++;
 
     // If 'i' is a multiple of 'printInterval'
     if ((i + 1) % printInterval === 0) {
@@ -37089,12 +37090,12 @@ function train(neutron, percentCompleteFn, debugMode) {
     }
 
     // Adjust the neuron's weights and bias
-    var difference = expected - actual;
+    var difference = expected - result.delta;
     var learningRate = learningRateMax - learningRateMax * (i / maxIterations);
     neutron.adjust(point.toArray(), difference, learningRate);
 
     point.expected = expected;
-    point.actual = actual;
+    point.actual = result.output;
     allPoints.push(point);
 
     // If there is a given function to perform when certain tasks are complete, do it now
@@ -37189,7 +37190,8 @@ var SigmoidNeuron = function (_Perceptron) {
       for (var i = 0; i < inputs.length; i++) {
         sum += inputs[i] * this.weights[i];
       }
-      return toBinary(sigmoid(sum));
+      var sigmoidVal = sigmoid(sum);
+      return { output: toBinary(sigmoidVal), delta: sigmoidVal };
     }
   }]);
 

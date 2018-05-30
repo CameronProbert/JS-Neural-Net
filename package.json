@@ -9,10 +9,10 @@
     "start": "webpack && node server",
     "dev": "node server & webpack --watch",
     "test": "jest --watchAll",
-    "perceptron-neuron": "node index --perceptron",
-    "sigmoid-neuron": "node client/index.js --sigmoid",
-    "compare-neurons": "node index --compare-neurons",
-    "compare-neurons-async": "node index --perceptron & node index --sigmoid",
+    "perceptron-neuron": "node client/neural-nets/index --perceptron",
+    "sigmoid-neuron": "node client/neural-nets/index.js --sigmoid",
+    "compare-neurons": "node client/neural-nets/index --compare-neurons",
+    "compare-neurons-async": "node client/neural-nets/index --perceptron & node index --sigmoid",
     "man": "node index --help"
   },
   "babel": {
