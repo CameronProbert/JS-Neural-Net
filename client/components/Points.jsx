@@ -8,14 +8,9 @@ class Points extends React.Component {
     this.addPoint = this.addPoint.bind(this)
     this.createPoint = this.createPoint.bind(this)
 
-    const testPoint = {
-      x: 50,
-      y: 50,
-      stroke: 'green'
-    }
     this.state = {
-      points: [testPoint]
-      radius:
+      points: [],
+      radius: 2
     }
   }
 
@@ -27,9 +22,10 @@ class Points extends React.Component {
   }
 
   render () {
-    return this.state.points.map(point => {
+    const {points, radius} = this.state;
+    return points.map(point => {
       return (
-        <circle cx= cy= r= stroke={point.stroke} />
+        <circle cx={point.x} cy={point.y} r={radius} stroke={point.stroke} />
       )
     })
   }

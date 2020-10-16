@@ -6,8 +6,9 @@
   "author": "Cameron Probert <c.probert@hotmail.co.nz>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack && node server",
-    "dev": "node server & webpack --watch",
+    "build": "snowpack build",
+    "start": "snowpack && node server",
+    "dev": "node server & snowpack dev",
     "test": "jest --watchAll",
     "perceptron-neuron": "node client/neural-nets/index --perceptron",
     "sigmoid-neuron": "node client/neural-nets/index.js --sigmoid",
@@ -37,7 +38,6 @@
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "sigmoid": "^0.0.1",
-    "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.11.1"
+    "snowpack": "^2.14.1"
   }
 }
