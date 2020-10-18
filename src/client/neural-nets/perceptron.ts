@@ -1,14 +1,16 @@
-const _ = require('lodash')
+import _ from 'lodash'
 
 /**
  * Creates a new Perceptron with no data
  * @param {Integer} numInputs the number of inputs for the perceptron to have
  */
-class Perceptron {
-  constructor (numInputs) {
+export default class Perceptron {
+  weights: number[] = [];
+  bias: number = randomiseBias();
+
+  constructor (numInputs: number) {
     // Set up variables
     this.weights = randomiseWeights(numInputs)
-    this.bias = randomiseBias()
   }
 
   toString () {
@@ -24,7 +26,7 @@ class Perceptron {
     }).join()
   }
 
-  process (inputs) {
+  process (inputs: number[]) {
     let sum = this.bias
     for (let i = 0; i < inputs.length; i++) {
       sum += inputs[i] * this.weights[i]
@@ -33,7 +35,7 @@ class Perceptron {
     return {output: heavisideVal, delta: heavisideVal}
   }
 
-  adjust (inputs, difference, learningRate) {
+  adjust (inputs: any[], difference: number, learningRate: number) {
     for (let i = 0; i < inputs.length; i++) {
       this.weights[i] += (inputs[i] * difference * learningRate)
     }
@@ -45,9 +47,9 @@ class Perceptron {
  * Converts the input to binary. 0 if less than 0, else 1
  * @param {Number} input the input to test
  */
-const heaviside = input => input < 0 ? 0 : 1
+const heaviside = (input: number) => input < 0 ? 0 : 1
 
-function randomiseWeights (numInputs) {
+function randomiseWeights(numInputs: number) {
   const weights = []
   for (let i = 0; i < numInputs; i++) {
     weights.push(_.random(-1, 1, true))
@@ -55,9 +57,7 @@ function randomiseWeights (numInputs) {
   return weights
 }
 
-function randomiseBias () {
+function randomiseBias() {
   const bias = _.random(-1, 1, true)
   return bias
 }
-
-module.exports = Perceptron
