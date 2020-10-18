@@ -4,19 +4,23 @@ const numTicks = 20
 const numPosTicks = numTicks / 2
 const numNegTicks = numTicks / -2
 
+type Props = {
+  svgSize: number;
+}
+
 /**
  * Generates the axis for the svg
- * @param {*} props React element properties. Requires the svg size in svgSize element.
+ * @param {Props} props React element properties. Requires the svg size in svgSize element.
  */
-const Axes = props => {
-  const cx = props.svgSize / 2
-  const cy = props.svgSize / 2
+const Axes: React.FC<Props> = ({svgSize}) => {
+  const cx = svgSize / 2
+  const cy = svgSize / 2
 
-  const ticks = generateTicks(props.svgSize)
-  ticks.push(<line key='x-axis' className='axis x-axis' x1={cx} y1="0" x2={cx} y2={props.svgSize} />)
-  ticks.push(<line key='y-axis' className='axis y-axis' x1="0" y1={cy} x2={props.svgSize} y2={cy} />)
+  const ticks = generateTicks(svgSize)
+  ticks.push(<line key='x-axis' className='axis x-axis' x1={cx} y1="0" x2={cx} y2={svgSize} />)
+  ticks.push(<line key='y-axis' className='axis y-axis' x1="0" y1={cy} x2={svgSize} y2={cy} />)
 
-  return (ticks)
+  return <>{ticks}</>
 }
 
 /**
@@ -24,7 +28,7 @@ const Axes = props => {
  * @param {*} svgSize The size of the svg element. Used so the function can scale the axes ticks
  * @returns Array of html/svg 'line' elements
  */
-function generateTicks (svgSize) {
+function generateTicks (svgSize: number) {
   const cx = svgSize / 2
   const cy = svgSize / 2
   const tickSpacing = svgSize / numTicks
